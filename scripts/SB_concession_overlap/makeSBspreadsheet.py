@@ -129,11 +129,16 @@ concArea_Ha = [ getconcArea(i) for i in convenio ]
 
 perConc = np.array(concArea_Ha) / np.array(SBarea)
 
+########### add com/indiv #########
+
+CorI = [ SB[SB.convenio == i ].descripcio.iloc[0] for i in convenio ]
+
 
 ####### make df #########
 
 df = pd.concat([pd.Series(comboName), \
     pd.Series(convenio),\
+    pd.Series(CorI),\
     pd.Series(SBarea),\
     pd.Series(concIDs),\
     pd.Series(concArea_Ha),\
@@ -141,6 +146,7 @@ df = pd.concat([pd.Series(comboName), \
     ], keys = [ \
         'comboName', \
         'convenio', \
+        'CorI', \
         'SBarea', \
         'concIDs', \
         'concArea_Ha', \
