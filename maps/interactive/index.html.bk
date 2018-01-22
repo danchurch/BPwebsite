@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style>
+
+    .province:hover {
+      fill: orange;
+    }
+
+    .concession:hover {
+      fill: #0015a2;
+    }
+
+</style>
+<body>
+<svg id='chart' width="1000" height="1000px">
+</svg>
+</body>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<script>
+
+////////////////////////////
+// UTM 17S = -84.0000, -80.0000, -78.0000, 0.0000
+// center of map = -78.6, -1.5
+
+var scale = 1000,
+  translateX = 2700,
+  translateY = 150;
+var projection = d3.geoTransverseMercator()
+  //.rotate([82, -1.5]) //don't need? 
+  .scale(scale)
+  .translate( [translateX, translateY]);
+
+////////////////////////////
+
+// provinces //
+
+d3.json("provinces.geojson", function(error, prov){
+    if (error) throw error;
+
+    //var projection = d3.geoTransverseMercator()
+    //  .scale(scale)
+    //  .translate( [translateX, translateY]);
+    var geoGenerator = d3.geoPath()
+      .projection(projection);
+    var u = d3.select('#chart')
+      .selectAll('path')
+      .data(prov.features);
+
+    u.enter()
+      .append('path')
+      .attr('d', geoGenerator)
+      .attr("class", "province")
+      .style('stroke', 'black')
+      .attr('fill', '#f1f4c7')
+      //.style('stroke-width', 1);
+})
+
+//// concessions //
+  
+d3.json("Conc_01_2018.geojson", function(error, conc){
+    if (error) throw error;
+
+    var geoGenerator = d3.geoPath()
+      .projection(projection);
+    var v = d3.select('#chart')
+      .selectAll('path')
+      .data(conc.features);
+
+    v.enter()
+      .append('path')
+      .attr('d', geoGenerator)
+      .attr("class", "concession")
+      .attr('fill', '#fa278a')
+      .style('stroke', 'black')
+      //.style('stroke-width', 1);
+})
+</script>
