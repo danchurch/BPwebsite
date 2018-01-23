@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
+<meta charset='utf-8'>
 
 <style>
 
@@ -12,69 +12,52 @@
     }
 
 </style>
-<body>
-<svg id='chart' width="1000" height="1000px">
-</svg>
-</body>
 
+<svg width="960" height="720"></svg>
+
+<!-- get d3 -->
 <script src="https://d3js.org/d3.v4.min.js"></script>
 
-<script>
+<!-- js -->
+<script> 
 
-////////////////////////////
-// UTM 17S = -84.0000, -80.0000, -78.0000, 0.0000
-// center of map = -78.6, -1.5
+var svg = d3.select("svg"),
+width = +svg.attr("width"),
+height = +svg.attr("height");
 
-var scale = 1000,
-  translateX = 2700,
-  translateY = 150;
-var projection = d3.geoTransverseMercator()
-  //.rotate([82, -1.5]) //don't need? 
-  .scale(scale)
-  .translate( [translateX, translateY]);
-
-////////////////////////////
-
-// provinces //
-
-d3.json("provinces.geojson", function(error, prov){
+d3.json("provinces.geojson", function(error, prov) {
     if (error) throw error;
 
-    //var projection = d3.geoTransverseMercator()
-    //  .scale(scale)
-    //  .translate( [translateX, translateY]);
-    var geoGenerator = d3.geoPath()
-      .projection(projection);
-    var u = d3.select('#chart')
+    var projection = d3.geoMercator().fitSize([width, height], prov);
+    var path = d3.geoPath().projection(projection);
+    var u = d3.select('svg')
       .selectAll('path')
       .data(prov.features);
 
     u.enter()
       .append('path')
-      .attr('d', geoGenerator)
+      .attr('d', path)
       .attr("class", "province")
       .style('stroke', 'black')
       .attr('fill', '#f1f4c7')
-      //.style('stroke-width', 1);
+
 })
 
-//// concessions //
-  
-d3.json("Conc_01_2018.geojson", function(error, conc){
+d3.json("Conc_01_2018.geojson", function(error, conc) {
     if (error) throw error;
 
-    var geoGenerator = d3.geoPath()
-      .projection(projection);
-    var v = d3.select('#chart')
+    var projection = d3.geoMercator().fitSize([width, height], conc);
+    var path = d3.geoPath().projection(projection);
+    var v = d3.select('svg')
       .selectAll('path')
       .data(conc.features);
 
     v.enter()
       .append('path')
-      .attr('d', geoGenerator)
+      .attr('d', path)
       .attr("class", "concession")
       .attr('fill', '#fa278a')
-      .style('stroke', 'black')
-      //.style('stroke-width', 1);
+      .style('stroke', 'black');
 })
+
 </script>
